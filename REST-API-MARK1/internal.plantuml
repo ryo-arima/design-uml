@@ -1,0 +1,69 @@
+@startuml internal
+!define LIGHTBLUE
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 12
+skinparam backgroundColor LightBlue
+skinparam shadowing false
+skinparam linetype ortho
+
+package controller {
+
+  interface GroupControllerForInternal {
+    +GetGroups(c: gin.Context)
+    +CreateGroup(c: gin.Context)
+    +UpdateGroup(c: gin.Context)
+    +DeleteGroup(c: gin.Context)
+  }
+
+  class groupControllerForInternal {
+    - GroupRepository: repository.GroupRepository
+    +GetGroups(c: gin.Context)
+    +CreateGroup(c: gin.Context)
+    +UpdateGroup(c: gin.Context)
+    +DeleteGroup(c: gin.Context)
+  }
+
+  GroupControllerForInternal <|.. groupControllerForInternal
+
+  class gin.Context
+  class repository.GroupRepository
+  class request.GroupRequest
+  class response.GroupResponse
+}
+
+package repository {
+
+  interface GroupRepository {
+    +GetGroups(): []model.Groups
+    +CreateGroup(group: model.Groups): *gorm.DB
+    +UpdateGroup(group: model.Groups): *gorm.DB
+    +DeleteGroup(uuid: string): *gorm.DB
+  }
+
+  class groupRepository {
+    - BaseConfig: config.BaseConfig
+    +GetGroups(): []model.Groups
+    +CreateGroup(group: model.Groups): *gorm.DB
+    +UpdateGroup(group: model.Groups): *gorm.DB
+    +DeleteGroup(uuid: string): *gorm.DB
+  }
+
+  GroupRepository <|.. groupRepository
+
+  class config.BaseConfig
+  class gorm.DB
+}
+
+class model.Groups
+
+groupControllerForInternal --> repository.GroupRepository
+groupControllerForInternal --> gin.Context
+groupControllerForInternal --> request.GroupRequest
+groupControllerForInternal --> response.GroupResponse
+groupControllerForInternal --> model.Groups
+
+groupRepository --> config.BaseConfig
+groupRepository --> model.Groups
+groupRepository --> gorm.DB
+
+@enduml
