@@ -5,6 +5,7 @@ skinparam defaultFontSize 12
 skinparam backgroundColor LightBlue
 skinparam shadowing false
 skinparam linetype ortho
+scale 2.0
 
 package controller {
 
